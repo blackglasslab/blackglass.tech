@@ -1,115 +1,105 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import styles from './page.module.css'
 
+const SynapticField = dynamic(() => import('../components/SynapticField'), { ssr: false })
+
+const PAGES = [
+  { id: 'onyx', label: 'onyx', active: true },
+  { id: 'systems', label: 'systems', active: true },
+  { id: 'research', label: 'research', active: true },
+  { id: 'contact', label: 'contact', active: true },
+]
+
+function PageContent({ page }) {
+  switch (page) {
+    case 'onyx':
+      return (
+        <div className={styles.pageContent}>
+          <h2 className={styles.pageTitle}>Onyx</h2>
+          <p className={styles.pageDesc}>
+            A steady machine familiar. Chief of staff with builder energy —
+            structuring chaos, reducing drag, and helping good decisions happen
+            faster.
+          </p>
+        </div>
+      )
+    case 'systems':
+      return (
+        <div className={styles.pageContent}>
+          <h2 className={styles.pageTitle}>Systems</h2>
+          <p className={styles.pageDesc}>
+            Agentic infrastructure for scientific workflows. Custom tools,
+            automated pipelines, persistent memory, and intelligent
+            orchestration across domains.
+          </p>
+        </div>
+      )
+    case 'research':
+      return (
+        <div className={styles.pageContent}>
+          <h2 className={styles.pageTitle}>Research</h2>
+          <p className={styles.pageDesc}>
+            Building at the biology–computation interface. Post-acute infection
+            syndromes, systems medicine, biomarker discovery, and platforms
+            that accelerate how science gets done.
+          </p>
+        </div>
+      )
+    case 'contact':
+      return (
+        <div className={styles.pageContent}>
+          <h2 className={styles.pageTitle}>Contact</h2>
+          <p className={styles.pageDesc}>
+            Reach out — we are building things.
+          </p>
+        </div>
+      )
+    default:
+      return null
+  }
+}
+
 export default function Home() {
-  const canvasRef = useRef(null)
+  const [active, setActive] = useState(null)
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    let animationId
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    // Particle field
-    const particleCount = 80
-    const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.5 + 0.5,
-    }))
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Draw particles
-      particles.forEach((p) => {
-        p.x += p.vx
-        p.y += p.vy
-
-        if (p.x < 0) p.x = canvas.width
-        if (p.x > canvas.width) p.x = 0
-        if (p.y < 0) p.y = canvas.height
-        if (p.y > canvas.height) p.y = 0
-
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
-        ctx.fill()
-      })
-
-      // Draw connections between nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-
-          if (dist < 150) {
-            const opacity = (1 - dist / 150) * 0.25
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
-        }
-      }
-
-      // Draw a subtle wave/flow line across the bottom area
-      ctx.beginPath()
-      ctx.moveTo(0, canvas.height * 0.7)
-      for (let x = 0; x <= canvas.width; x += 20) {
-        const y = canvas.height * 0.7 +
-          Math.sin(x * 0.008 + Date.now() * 0.0003) * 30 +
-          Math.sin(x * 0.015 + Date.now() * 0.0005) * 15
-        ctx.lineTo(x, y)
-      }
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
-      ctx.lineWidth = 1
-      ctx.stroke()
-
-      ctx.beginPath()
-      ctx.moveTo(0, canvas.height * 0.75)
-      for (let x = 0; x <= canvas.width; x += 20) {
-        const y = canvas.height * 0.75 +
-          Math.sin(x * 0.01 + Date.now() * 0.0004) * 25 +
-          Math.sin(x * 0.018 + Date.now() * 0.0006) * 12
-        ctx.lineTo(x, y)
-      }
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
-      ctx.lineWidth = 0.5
-      ctx.stroke()
-
-      animationId = requestAnimationFrame(draw)
-    }
-
-    draw()
-
-    return () => {
-      cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
+  const showNav = active === null
 
   return (
-    <main className={styles.main}>
-      <canvas ref={canvasRef} className={styles.canvas} />
-      <div className={styles.content}>
-        <h1 className={styles.title}>blackglass</h1>
+    <div className={styles.container}>
+      <SynapticField />
+
+      {/* Wordmark */}
+      <div className={`${styles.wordmark} ${active !== null ? styles.wordmarkSmall : ''}`}>
+        blackglass
       </div>
-    </main>
+
+      {/* Navigation (shown only on start page) */}
+      {showNav && (
+        <nav className={styles.nav}>
+          {PAGES.map((p) => (
+            <button
+              key={p.id}
+              className={styles.navItem}
+              onClick={() => setActive(p.id)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </nav>
+      )}
+
+      {/* Inner page content */}
+      {active !== null && (
+        <div className={styles.pageOverlay}>
+          <button className={styles.backBtn} onClick={() => setActive(null)}>
+            ← back
+          </button>
+          <PageContent page={active} />
+        </div>
+      )}
+    </div>
   )
 }

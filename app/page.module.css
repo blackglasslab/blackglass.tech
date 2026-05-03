@@ -1,32 +1,127 @@
-.main {
+.container {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   min-height: 100vh;
   background: #000;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.content {
+/* Wordmark */
+.wordmark {
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  font-size: clamp(2.5rem, 10vw, 7rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #fff;
+  user-select: none;
   text-align: center;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1.1;
 }
 
-.title {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  font-weight: 300;
-  color: #fff;
+.wordmarkSmall {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  z-index: 15;
+}
+
+/* Navigation */
+.nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.navItem {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.navItem::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.4);
+  transition: width 0.3s;
+}
+
+.navItem:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navItem:hover::after {
+  width: 100%;
+}
+
+/* Inner page overlay */
+.pageOverlay {
+  position: relative;
+  z-index: 10;
+  max-width: 580px;
+  width: 90%;
+  padding: 120px 24px 60px;
+  animation: fadeIn 0.5s ease;
+}
+
+.backBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: inherit;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 4px;
+  transition: all 0.3s;
+  margin-bottom: 40px;
+}
+
+.backBtn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 400;
   letter-spacing: 0.02em;
+  margin: 0 0 20px;
+  color: #fff;
+}
+
+.pageDesc {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
   margin: 0;
-  user-select: none;
+  font-weight: 300;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
