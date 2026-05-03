@@ -1,12 +1,12 @@
 export const metadata = {
   title: 'blackglass.tech',
-  description: 'Blackglass Technology',
+  description: 'agentic systems for scientific work',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={{margin: 0}}>{children}</body>
     </html>
   )
 }

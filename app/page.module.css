@@ -1,18 +1,32 @@
 .main {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #000;
+  overflow: hidden;
 }
 
-.main h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.main p {
-  font-size: 1.2rem;
-  color: #666;
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: 0.02em;
+  margin: 0;
+  user-select: none;
 }
