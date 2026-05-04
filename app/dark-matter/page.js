@@ -47,7 +47,15 @@ export default function DarkMatterPage() {
             <span className={styles.navCurrent}>dark matter</span>
           </nav>
           <div className={styles.lock}>
-            <h1 className={styles.lockIcon}>⬡</h1>
+            <svg className={styles.lockIcon} width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="0.8" opacity="0.4" />
+              <circle cx="24" cy="24" r="10" stroke="currentColor" strokeWidth="0.6" opacity="0.3" />
+              <circle cx="24" cy="24" r="3" fill="currentColor" opacity="0.15" />
+              <path d="M6 24 Q 12 14, 24 12 Q 36 10, 42 24" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.2" />
+              <path d="M6 24 Q 12 34, 24 36 Q 36 38, 42 24" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.2" />
+              <path d="M24 6 Q 14 12, 12 24 Q 10 36, 24 42" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.15" />
+              <path d="M24 6 Q 34 12, 36 24 Q 38 36, 24 42" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.15" />
+            </svg>
             <h2 className={styles.lockTitle}>Dark Matter</h2>
             <p className={styles.lockDesc}>This feed is private. Enter the passphrase to listen.</p>
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -79,6 +87,11 @@ export default function DarkMatterPage() {
         </nav>
 
         <div className={styles.header}>
+          <svg className={styles.headerIcon} width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="15" stroke="currentColor" strokeWidth="0.7" opacity="0.25" />
+            <circle cx="20" cy="20" r="8" stroke="currentColor" strokeWidth="0.5" opacity="0.18" />
+            <circle cx="20" cy="20" r="2.5" fill="currentColor" opacity="0.08" />
+          </svg>
           <h1 className={styles.title}>Dark Matter</h1>
           <p className={styles.subtitle}>briefings from the unseen space between onyx and blackglass</p>
         </div>

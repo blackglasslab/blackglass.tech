@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #0a0a0a;
-  color: #e0e0e0;
+  background: #0f0e0c;
+  color: #d4d0c8;
   font-family: inherit;
 }
 
@@ -13,10 +13,24 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(40, 20, 60, 0.3), transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(10, 30, 50, 0.3), transparent 50%);
+    /* Organic tissue-like wash, warm earthy */
+    radial-gradient(ellipse at 30% 30%, rgba(60, 40, 25, 0.25), transparent 55%),
+    radial-gradient(ellipse at 70% 70%, rgba(30, 50, 40, 0.2), transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(80, 55, 35, 0.15), transparent 40%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Subtle biological texture overlay — like cell wall irregularities */
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 25%, rgba(100, 80, 50, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 85% 40%, rgba(60, 80, 60, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 45% 75%, rgba(80, 60, 40, 0.02) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .membrane {
@@ -24,7 +38,8 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.15;
+  opacity: 0.08;
+  filter: sepia(0.6) hue-rotate(-20deg) saturate(0.5);
 }
 
 .content {
@@ -40,26 +55,26 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #666;
+  color: #665e54;
 }
 
 .navLink {
-  color: #888;
+  color: #8a8070;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .navLink:hover {
-  color: #c0c0c0;
+  color: #c0b8a8;
 }
 
 .navLink::after {
   content: ' / ';
-  color: #444;
+  color: #4a443c;
 }
 
 .navCurrent {
-  color: #aaa;
+  color: #aaa088;
 }
 
 /* Lock screen */
@@ -74,21 +89,21 @@
 
 .lockIcon {
   font-size: 3rem;
-  color: #555;
+  color: #5a5040;
   margin-bottom: 0.5rem;
 }
 
 .lockTitle {
   font-size: 1.8rem;
-  font-weight: 400;
-  letter-spacing: 0.15em;
+  font-weight: 300;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #c0c0c0;
+  color: #b8ad98;
   margin: 0 0 0.75rem;
 }
 
 .lockDesc {
-  color: #777;
+  color: #7a7260;
   font-size: 0.9rem;
   margin-bottom: 2rem;
   max-width: 320px;
@@ -103,9 +118,9 @@
 }
 
 .input {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #e0e0e0;
+  background: #1a1815;
+  border: 1px solid #363028;
+  color: #d4d0c8;
   padding: 0.6rem 1rem;
   font-size: 0.9rem;
   border-radius: 4px;
@@ -116,19 +131,19 @@
 }
 
 .input:focus {
-  border-color: #666;
+  border-color: #6a6050;
 }
 
 .error {
-  color: #c44;
+  color: #b84a3a;
   font-size: 0.8rem;
   margin: 0;
 }
 
 .button {
-  background: #222;
-  border: 1px solid #444;
-  color: #ccc;
+  background: #22201a;
+  border: 1px solid #3c362c;
+  color: #b8ad98;
   padding: 0.5rem 1.5rem;
   font-size: 0.85rem;
   border-radius: 4px;
@@ -139,27 +154,42 @@
 }
 
 .button:hover {
-  background: #333;
-  border-color: #666;
-  color: #fff;
+  background: #302c24;
+  border-color: #5a5040;
+  color: #e0d8c8;
 }
 
 /* Episode list */
 .header {
   margin-bottom: 3rem;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, #5a5040, transparent);
+  margin-top: 1rem;
+}
+
+.headerIcon {
+  color: #5a5040;
+  margin-bottom: 0.75rem;
 }
 
 .title {
   font-size: 2rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
+  font-weight: 200;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #c0c0c0;
+  color: #c0b5a0;
   margin: 0 0 0.5rem;
 }
 
 .subtitle {
-  color: #666;
+  color: #6a6255;
   font-size: 0.9rem;
   margin: 0;
   line-height: 1.5;
@@ -172,7 +202,7 @@
 }
 
 .empty {
-  color: #555;
+  color: #4a443c;
   font-style: italic;
   font-size: 0.9rem;
 }
@@ -180,14 +210,20 @@
 .episode {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid #1a1a1a;
-  border-radius: 8px;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid #1e1c18;
+  border-radius: 10px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.episode:hover {
+  border-color: #2e2a22;
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .epNumber {
-  color: #444;
+  color: #4a443c;
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
   min-width: 2rem;
@@ -200,21 +236,21 @@
 
 .epTitle {
   font-size: 1.1rem;
-  font-weight: 400;
-  color: #d0d0d0;
+  font-weight: 350;
+  color: #c8c0b0;
   margin: 0 0 0.25rem;
 }
 
 .epDate {
   font-size: 0.75rem;
-  color: #555;
+  color: #4a443c;
   margin: 0 0 0.5rem;
 }
 
 .epDesc {
   font-size: 0.85rem;
-  color: #888;
-  line-height: 1.5;
+  color: #7a7260;
+  line-height: 1.6;
   margin: 0 0 0.75rem;
 }
 
@@ -224,5 +260,5 @@
 }
 
 .audio::-webkit-media-controls-panel {
-  background: #1a1a1a;
+  background: #1a1815;
 }
