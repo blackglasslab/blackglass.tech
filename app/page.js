@@ -16,6 +16,9 @@ export default function Home() {
       <div className={styles.content}>
         <h1 className={styles.wordmark}>blackglass</h1>
         <p className={styles.subtitle}>agentic systems for scientific work</p>
+        <nav className={styles.nav}>
+          <a href="/tools" className={styles.navLink}>tools</a>
+        </nav>
       </div>
     </main>
   )

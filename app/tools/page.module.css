@@ -1,0 +1,276 @@
+.main {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #000;
+  overflow-x: hidden;
+  color: #e8e8e8;
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 0;
+}
+
+.membrane {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Foreground scrollable content */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+  font-family: Geist, Inter, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ---- Nav ---- */
+.nav {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  margin-bottom: 3.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+}
+
+.navLink {
+  color: #a6a6a6;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: #f2f2f2;
+}
+
+.navCurrent {
+  color: #f2f2f2;
+  font-weight: 400;
+}
+
+/* ---- Page heading ---- */
+.pageTitle {
+  font-weight: 200;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: 0.2em;
+  color: #f2f2f2;
+  margin: 0 0 0.6rem;
+  text-transform: lowercase;
+}
+
+.pageTagline {
+  font-weight: 300;
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  color: #888;
+  margin: 0 0 3rem;
+  letter-spacing: 0.02em;
+}
+
+/* ---- Tool card ---- */
+.toolCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 2rem 2rem 2.2rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(4px);
+  transition: border-color 0.25s;
+}
+
+.toolCard:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.toolHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.2rem;
+}
+
+.toolIcon {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.toolName {
+  font-weight: 300;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  color: #f2f2f2;
+  margin: 0 0 0.2rem;
+  letter-spacing: 0.04em;
+}
+
+.toolTagline {
+  font-weight: 300;
+  font-size: 0.9rem;
+  color: #a6a6a6;
+  margin: 0;
+  font-style: italic;
+}
+
+.toolDescription {
+  font-weight: 300;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #b0b0b0;
+  margin: 0 0 1.5rem;
+}
+
+/* ---- Modes ---- */
+.modesSection {
+  margin-bottom: 1.5rem;
+}
+
+.sectionLabel {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.6rem;
+}
+
+.modesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.modePill {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  color: #c0c0c0;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Features ---- */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.8rem;
+}
+
+.feature {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: #999;
+  line-height: 1.45;
+}
+
+.featureIcon {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.65rem;
+  margin-top: 0.3rem;
+  flex-shrink: 0;
+}
+
+/* ---- CTA ---- */
+.cta {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ctaStatus {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  font-weight: 300;
+}
+
+.ctaButton {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #f2f2f2;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  padding: 0.55rem 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ctaButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ---- Future tools ---- */
+.future {
+  text-align: center;
+  padding: 2rem 0;
+  opacity: 0.35;
+}
+
+.futureText {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  font-style: italic;
+}
+
+/* ---- Footer ---- */
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  text-align: center;
+}
+
+.footer p {
+  font-size: 0.7rem;
+  color: #444;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .content {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .toolCard {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modesGrid {
+    gap: 0.35rem;
+  }
+
+  .modePill {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
+  }
+}
