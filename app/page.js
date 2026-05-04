@@ -18,6 +18,12 @@ export default function Home() {
       {/* Glass reflection overlay */}
       <div className={styles.reflection} />
 
+      {/* Nav */}
+      <nav className={styles.nav}>
+        <a href="/tools" className={styles.navLink}>tools</a>
+        <a href="/dark-matter" className={styles.navLink}>dark matter</a>
+      </nav>
+
       {/* Vignette */}
       <div className={styles.vignette} />
     </main>

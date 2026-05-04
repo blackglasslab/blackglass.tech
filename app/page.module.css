@@ -104,6 +104,32 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+.nav {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 2rem;
+  animation: brandIn 950ms ease-out both;
+  animation-delay: 400ms;
+}
+
+.navLink {
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  font-weight: 300;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.navLink:hover {
+  color: rgba(255,255,255,0.7);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .brand { animation: none; opacity: 1; filter: none; }

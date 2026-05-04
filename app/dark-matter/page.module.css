@@ -1,0 +1,228 @@
+.main {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: inherit;
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(40, 20, 60, 0.3), transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(10, 30, 50, 0.3), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.membrane {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 680px;
+  padding: 3rem 1.5rem;
+}
+
+.nav {
+  margin-bottom: 3rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.navLink {
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: #c0c0c0;
+}
+
+.navLink::after {
+  content: ' / ';
+  color: #444;
+}
+
+.navCurrent {
+  color: #aaa;
+}
+
+/* Lock screen */
+.lock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.lockIcon {
+  font-size: 3rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.lockTitle {
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c0c0c0;
+  margin: 0 0 0.75rem;
+}
+
+.lockDesc {
+  color: #777;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.input {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  width: 220px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #666;
+}
+
+.error {
+  color: #c44;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.button {
+  background: #222;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.button:hover {
+  background: #333;
+  border-color: #666;
+  color: #fff;
+}
+
+/* Episode list */
+.header {
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c0c0c0;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.episodeList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.empty {
+  color: #555;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.episode {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+}
+
+.epNumber {
+  color: #444;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 2rem;
+  padding-top: 0.1rem;
+}
+
+.epBody {
+  flex: 1;
+}
+
+.epTitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #d0d0d0;
+  margin: 0 0 0.25rem;
+}
+
+.epDate {
+  font-size: 0.75rem;
+  color: #555;
+  margin: 0 0 0.5rem;
+}
+
+.epDesc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.5;
+  margin: 0 0 0.75rem;
+}
+
+.audio {
+  width: 100%;
+  height: 40px;
+}
+
+.audio::-webkit-media-controls-panel {
+  background: #1a1a1a;
+}
