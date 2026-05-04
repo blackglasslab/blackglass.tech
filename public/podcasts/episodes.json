@@ -1,10 +1,16 @@
 {
   "episodes": [
     {
-      "title": "AI & Startup Foundations",
+      "title": "AI & ML Foundations",
       "date": "2026-05-04",
-      "description": "Ground-up literacy for understanding modern AI systems and startup fundamentals. A podcast tour through machine learning concepts, how transformers work, agent frameworks, AI safety, startup lifecycle, fundraising, equity, roles, and how both sides connect for a scientist considering a builder-transition.",
-      "filename": "darkmatter_001_ai_startup_foundations.mp3"
+      "description": "Ground-up AI and machine learning literacy. From what AI actually is, through how neural networks train, the Transformer breakthrough, language models, agents, AI in biology, and key safety concepts. No jargon, just the mental models you need.",
+      "filename": "darkmatter_ai_foundations.mp3"
+    },
+    {
+      "title": "Startup & Business Foundations",
+      "date": "2026-05-04",
+      "description": "Startup fundamentals from the ground up: what defines a startup, the lifecycle, essential vocabulary like runway, burn, ARR, product-market fit, fundraising stages, equity basics, AI startup specifics, what investors look for, and how to evaluate startup roles — all connected to a scientist's transition into the startup world.",
+      "filename": "darkmatter_startup_foundations.mp3"
     }
   ]
 }
