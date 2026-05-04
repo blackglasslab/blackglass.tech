@@ -1,268 +1,15 @@
-'use client'
-
-import { useEffect, useRef, useCallback } from 'react'
-
-// A structured glass/membrane network drawn with SVG-like splines on canvas.
-// No random particles. Just flowing Bezier curves with synapse-like junctions.
-
+/**
+ * SVG-based black-glass synaptic membrane.
+ * Thin translucent filaments in the lower 35–45% of the viewport.
+ * No particles, no stars, no galaxy. Just glass, curves, and junctions.
+ * Static SVG — no client-side JavaScript needed.
+ */
 export default function GlassMembrane() {
-  const canvasRef = useRef(null)
-  const mouseRef = useRef({ x: 0.5, y: 0.5 })
-  const timeRef = useRef(0)
-
-  const buildNetwork = useCallback((w, h) => {
-    // Define a set of master curves that form the membrane
-    // Each curve is an array of control points: { x, y, cp1x, cp1y, cp2x, cp2y }
-    const bottom = h * 0.95
-    const top = h * 0.55
-    const margin = w * 0.08
-
-    const curves = [
-      // Main sweep — left to right, undulating
-      [
-        { x: -margin, y: top + (bottom - top) * 0.6 },
-        { x: w * 0.15, y: top + (bottom - top) * 0.35 },
-        { x: w * 0.35, y: top + (bottom - top) * 0.55 },
-        { x: w * 0.5, y: top + (bottom - top) * 0.3 },
-        { x: w * 0.65, y: top + (bottom - top) * 0.5 },
-        { x: w * 0.85, y: top + (bottom - top) * 0.35 },
-        { x: w + margin, y: top + (bottom - top) * 0.55 },
-      ],
-      // Second sweep — offset, crossing
-      [
-        { x: -margin, y: top + (bottom - top) * 0.45 },
-        { x: w * 0.2, y: top + (bottom - top) * 0.6 },
-        { x: w * 0.4, y: top + (bottom - top) * 0.35 },
-        { x: w * 0.55, y: top + (bottom - top) * 0.55 },
-        { x: w * 0.7, y: top + (bottom - top) * 0.3 },
-        { x: w * 0.9, y: top + (bottom - top) * 0.5 },
-        { x: w + margin, y: top + (bottom - top) * 0.4 },
-      ],
-      // Third — lower, gentler
-      [
-        { x: -margin, y: top + (bottom - top) * 0.7 },
-        { x: w * 0.25, y: top + (bottom - top) * 0.5 },
-        { x: w * 0.45, y: top + (bottom - top) * 0.65 },
-        { x: w * 0.6, y: top + (bottom - top) * 0.45 },
-        { x: w * 0.8, y: top + (bottom - top) * 0.6 },
-        { x: w + margin, y: top + (bottom - top) * 0.7 },
-      ],
-      // Fourth — upper, subtle
-      [
-        { x: -margin, y: top + (bottom - top) * 0.3 },
-        { x: w * 0.3, y: top + (bottom - top) * 0.2 },
-        { x: w * 0.5, y: top + (bottom - top) * 0.25 },
-        { x: w * 0.7, y: top + (bottom - top) * 0.15 },
-        { x: w + margin, y: top + (bottom - top) * 0.25 },
-      ],
-    ]
-
-    // Compute intersection points as synapse nodes
-    const junctions = []
-    // Sample each curve densely and find nearby crossings
-    const sampled = curves.map(curve => {
-      const pts = []
-      for (let t = 0; t <= 1; t += 0.01) {
-        const p = catmullRomPoint(curve, t)
-        pts.push(p)
-      }
-      return pts
-    })
-
-    // Find crossing points between curve pairs
-    for (let i = 0; i < sampled.length; i++) {
-      for (let j = i + 1; j < sampled.length; j++) {
-        for (let ti = 0; ti < sampled[i].length - 1; ti += 2) {
-          for (let tj = 0; tj < sampled[j].length - 1; tj += 2) {
-            const a = sampled[i][ti]
-            const b = sampled[j][tj]
-            const dx = a.x - b.x
-            const dy = a.y - b.y
-            const dist = Math.sqrt(dx * dx + dy * dy)
-            if (dist < 18) {
-              // Check we don't double-add
-              const tooClose = junctions.some(jn => {
-                const jdx = jn.x - (a.x + b.x) / 2
-                const jdy = jn.y - (a.y + b.y) / 2
-                return Math.sqrt(jdx * jdx + jdy * jdy) < 20
-              })
-              if (!tooClose) {
-                junctions.push({
-                  x: (a.x + b.x) / 2,
-                  y: (a.y + b.y) / 2,
-                  r: 2 + Math.random() * 2,
-                })
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Add a few extra nodes at curve peaks
-    for (const pts of sampled) {
-      for (let i = 3; i < pts.length - 3; i += 7) {
-        const p = pts[i]
-        const tooClose = junctions.some(jn => {
-          const dx = jn.x - p.x
-          const dy = jn.y - p.y
-          return Math.sqrt(dx * dx + dy * dy) < 25
-        })
-        if (!tooClose && p.y > top && p.y < bottom) {
-          junctions.push({ x: p.x, y: p.y, r: 1.5 + Math.random() * 1.5 })
-        }
-      }
-    }
-
-    return { curves, junctions, sampled }
-  }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    let animId
-
-    let network
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      network = buildNetwork(canvas.width, canvas.height)
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const draw = () => {
-      const w = canvas.width
-      const h = canvas.height
-      ctx.clearRect(0, 0, w, h)
-
-      const { curves, junctions } = network
-      const mx = mouseRef.current.x
-      const time = Date.now() * 0.0001
-
-      // Very subtle wave offset based on mouse + time
-      const waveX = Math.sin(time) * 3 + (mx - 0.5) * 8
-      const waveY = Math.cos(time * 0.7) * 2
-
-      // Draw each curve as a smooth path
-      for (let ci = 0; ci < curves.length; ci++) {
-        const pts = curves[ci]
-        ctx.beginPath()
-
-        // Compute Catmull-Rom spline through points with offset
-        const getY = (pt, idx) => {
-          return pt.y + waveY + Math.sin(time + ci * 1.5 + idx * 0.3) * 3
-        }
-        const getX = (pt, idx) => {
-          return pt.x + waveX * 0.3 + Math.sin(time * 0.8 + ci * 2 + idx * 0.2) * 2
-        }
-
-        const p0 = pts[0]
-        ctx.moveTo(getX(p0, 0), getY(p0, 0))
-
-        for (let i = 1; i < pts.length; i++) {
-          const pPrev = pts[i - 1]
-          const pCur = pts[i]
-          const cp1x = (getX(pPrev, i - 1) + getX(pCur, i)) / 2
-          const cp1y = getY(pPrev, i - 1)
-          const cp2x = (getX(pPrev, i - 1) + getX(pCur, i)) / 2
-          const cp2y = getY(pCur, i)
-          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, getX(pCur, i), getY(pCur, i))
-        }
-
-        // Line opacity varies by depth
-        const lineOpacity = 0.12 + (ci / curves.length) * 0.12
-        ctx.strokeStyle = `rgba(255, 255, 255, ${lineOpacity})`
-        ctx.lineWidth = 0.8
-        ctx.stroke()
-      }
-
-      // Draw secondary filaments branching between curves
-      ctx.lineWidth = 0.3
-      for (let i = 0; i < curves.length - 1; i++) {
-        for (let j = 0; j < 3; j++) {
-          const t = 0.15 + j * 0.3
-          const idxA = Math.floor(t * (curves[i].length - 1))
-          const idxB = Math.floor(t * (curves[i + 1].length - 1))
-          const a = curves[i][Math.min(idxA, curves[i].length - 1)]
-          const b = curves[i + 1][Math.min(idxB, curves[i + 1].length - 1)]
-          const getY = (pt, idx) => pt.y + Math.sin(time + i + idx * 0.3) * 3
-          const getX = (pt, idx) => pt.x + Math.sin(time * 0.8 + i + idx * 0.2) * 2
-
-          ctx.beginPath()
-          ctx.moveTo(getX(a, idxA), getY(a, idxA))
-          ctx.quadraticCurveTo(
-            (getX(a, idxA) + getX(b, idxB)) / 2 + Math.sin(time + j) * 5,
-            (getY(a, idxA) + getY(b, idxB)) / 2 + Math.cos(time * 0.6 + j) * 3,
-            getX(b, idxB),
-            getY(b, idxB),
-          )
-          ctx.strokeStyle = `rgba(255, 255, 255, 0.04)`
-          ctx.stroke()
-        }
-      }
-
-      // Draw junction nodes (synapses)
-      for (const jn of junctions) {
-        const jx = jn.x + Math.sin(time + jn.x * 0.01) * 2
-        const jy = jn.y + Math.cos(time * 0.8 + jn.y * 0.01) * 1.5
-        const r = jn.r
-
-        // Very subtle glow
-        const grad = ctx.createRadialGradient(jx, jy, 0, jx, jy, r * 4)
-        grad.addColorStop(0, 'rgba(255, 255, 255, 0.08)')
-        grad.addColorStop(1, 'rgba(255, 255, 255, 0)')
-        ctx.beginPath()
-        ctx.arc(jx, jy, r * 4, 0, Math.PI * 2)
-        ctx.fillStyle = grad
-        ctx.fill()
-
-        // Node dot
-        ctx.beginPath()
-        ctx.arc(jx, jy, r, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
-        ctx.fill()
-      }
-
-      // Glass reflection overlay — a diagonal gradient sheen
-      const grad = ctx.createLinearGradient(
-        w * 0.2, h * 0.4,
-        w * 0.8, h * 0.7,
-      )
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0.0)')
-      grad.addColorStop(0.4, 'rgba(255, 255, 255, 0.015)')
-      grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.025)')
-      grad.addColorStop(0.6, 'rgba(255, 255, 255, 0.015)')
-      grad.addColorStop(1, 'rgba(255, 255, 255, 0.0)')
-      ctx.fillStyle = grad
-      ctx.fillRect(0, 0, w, h)
-
-      animId = requestAnimationFrame(draw)
-    }
-
-    draw()
-
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-    }
-  }, [buildNetwork])
-
-  // Mouse tracking
-  const handleMouse = useCallback((e) => {
-    const rect = canvasRef.current.getBoundingClientRect()
-    mouseRef.current = {
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    }
-  }, [])
-
   return (
-    <canvas
-      ref={canvasRef}
-      onMouseMove={handleMouse}
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid slice"
+      className="glass-membrane-svg"
       style={{
         position: 'absolute',
         inset: 0,
@@ -270,41 +17,146 @@ export default function GlassMembrane() {
         height: '100%',
         pointerEvents: 'none',
       }}
-    />
+    >
+      <defs>
+        {/* Soft blur for thick glass base underlay */}
+        <filter id="g-underlay" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+        </filter>
+
+        {/* Medium blur for mid glass base */}
+        <filter id="g-mid" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+        </filter>
+
+        {/* Fine glow for thin filaments */}
+        <filter id="g-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* Static diagonal sheen overlay */}
+        <linearGradient id="sheen-diag" x1="30%" y1="0%" x2="75%" y2="100%" gradientTransform="rotate(-28)">
+          <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+          <stop offset="52%" stopColor="rgba(255,255,255,0)" />
+          <stop offset="62%" stopColor="rgba(255,255,255,0.02)" />
+          <stop offset="66%" stopColor="rgba(255,255,255,0.04)" />
+          <stop offset="70%" stopColor="rgba(255,255,255,0.02)" />
+          <stop offset="78%" stopColor="rgba(255,255,255,0)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </linearGradient>
+
+        {/* Vignette */}
+        <radialGradient id="vignette" cx="50%" cy="35%" r="75%">
+          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
+          <stop offset="55%" stopColor="rgba(0,0,0,0.1)" />
+          <stop offset="85%" stopColor="rgba(0,0,0,0.45)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0.75)" />
+        </radialGradient>
+      </defs>
+
+      {/* === LAYER 0: Black background === */}
+      <rect x="0" y="0" width="100" height="100" fill="#000" />
+
+      {/* === LAYER 1: Thick glass underlay — very soft, blurry glow bands === */}
+      <g filter="url(#g-underlay)" opacity="0.055">
+        <path d="M-10,70 C12,58 28,72 45,62 C60,52 75,66 92,56 C108,46 118,60 130,54" fill="none" stroke="#fff" strokeWidth="14" strokeLinecap="round" />
+        <path d="M-10,78 C22,68 38,80 55,70 C70,60 85,74 100,64 C115,54 125,68 135,60" fill="none" stroke="#fff" strokeWidth="12" strokeLinecap="round" />
+        <path d="M-10,64 C18,54 35,66 50,56 C65,46 80,60 95,50 C110,40 122,54 130,48" fill="none" stroke="#fff" strokeWidth="10" strokeLinecap="round" />
+      </g>
+
+      {/* === LAYER 2: Mid glass base — moderate blur === */}
+      <g filter="url(#g-mid)" opacity="0.09">
+        <path d="M-10,73 C15,62 30,74 48,65 C63,56 78,70 93,60 C108,50 118,64 130,56" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" />
+        <path d="M-10,66 C22,56 38,68 55,58 C70,48 85,62 100,53 C115,44 125,58 135,50" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" />
+      </g>
+
+      {/* === LAYER 3: Main thin white filaments === */}
+      <g filter="url(#g-glow)">
+        <path d="M-10,75 C10,64 25,77 42,67 C58,57 72,71 88,62 C104,53 114,67 125,58" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1" strokeLinecap="round" />
+        <path d="M-10,68 C15,58 30,70 48,60 C62,50 78,64 95,55 C110,46 120,60 130,52" fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="0.95" strokeLinecap="round" />
+        <path d="M-10,82 C20,73 35,84 52,75 C68,66 82,80 98,72 C112,64 122,78 132,70" fill="none" stroke="rgba(255,255,255,0.17)" strokeWidth="0.9" strokeLinecap="round" />
+        <path d="M-10,62 C25,53 42,64 58,55 C74,46 88,58 105,50" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M22,57 C40,48 55,60 72,52 C88,44 102,56 118,48" fill="none" stroke="rgba(255,255,255,0.11)" strokeWidth="0.7" strokeLinecap="round" />
+      </g>
+
+      {/* === LAYER 4: Branching inter-filament connectors === */}
+      <g>
+        {/* Vertical / near-vertical connectors between main curves */}
+        <path d="M18,66 C16,70 20,74 18,78" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="0.55" strokeLinecap="round" />
+        <path d="M32,62 C30,66 34,70 32,74" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M45,59 C43,64 47,68 45,72" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="0.6" strokeLinecap="round" />
+        <path d="M60,55 C58,59 62,63 60,67" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M76,56 C74,60 78,64 76,68" fill="none" stroke="rgba(255,255,255,0.11)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M90,54 C88,58 92,62 90,66" fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth="0.45" strokeLinecap="round" />
+
+        {/* Diagonal cross-branching */}
+        <path d="M25,65 C29,70 27,75 31,79" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M52,60 C55,65 53,70 57,74" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M75,56 C78,61 76,66 80,70" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M85,54 C82,58 84,63 81,67" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M38,64 C42,68 40,72 44,76" fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M65,53 C69,57 67,62 71,66" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M95,56 C92,60 94,65 91,69" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M102,52 C99,56 101,61 98,65" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" strokeLinecap="round" />
+
+        {/* Short terminal branches (dendritic spines) */}
+        <path d="M14,63 C11,61 8,62 6,60" fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="0.5" strokeLinecap="round" />
+        <path d="M70,66 C73,69 76,68 78,71" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M90,75 C93,78 95,76 98,79" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M55,78 C52,81 50,79 47,82" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M108,58 C111,61 113,59 116,62" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.4" strokeLinecap="round" />
+        <path d="M115,55 C112,59 114,63 111,66" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.35" strokeLinecap="round" />
+      </g>
+
+      {/* === LAYER 5: Highlight paths — brighter, thinner, floats above === */}
+      <g>
+        <path d="M18,70 C32,64 44,74 58,67 C70,60 82,70 96,64" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="0.65" strokeLinecap="round" />
+        <path d="M26,65 C35,60 42,68 52,63 C60,58 68,66 78,61" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="0.6" strokeLinecap="round" />
+      </g>
+
+      {/* === LAYER 6: Junction nodes only at curve intersections === */}
+      <g fill="rgba(255,255,255,0.18)">
+        <circle cx="18" cy="66" r="1.1" />
+        <circle cx="32" cy="62" r="0.9" />
+        <circle cx="45" cy="59" r="1.3" />
+        <circle cx="60" cy="55" r="0.9" />
+        <circle cx="76" cy="56" r="1.1" />
+        <circle cx="90" cy="54" r="0.8" />
+        <circle cx="25" cy="65" r="0.8" />
+        <circle cx="52" cy="60" r="0.9" />
+        <circle cx="75" cy="56" r="0.7" />
+        <circle cx="85" cy="54" r="0.65" />
+        <circle cx="38" cy="64" r="0.9" />
+        <circle cx="65" cy="53" r="0.8" />
+        <circle cx="95" cy="56" r="0.7" />
+        <circle cx="102" cy="52" r="0.6" />
+        <circle cx="14" cy="63" r="0.7" />
+        <circle cx="70" cy="66" r="0.7" />
+      </g>
+
+      {/* === LAYER 7: Very sparse glint points along curves === */}
+      <g opacity="0.10">
+        <circle cx="28" cy="64" r="0.45" fill="rgba(255,255,255,0.15)" />
+        <circle cx="50" cy="58" r="0.4" fill="rgba(255,255,255,0.12)" />
+        <circle cx="72" cy="60" r="0.45" fill="rgba(255,255,255,0.10)" />
+        <circle cx="88" cy="65" r="0.35" fill="rgba(255,255,255,0.08)" />
+        <circle cx="42" cy="72" r="0.35" fill="rgba(255,255,255,0.07)" />
+        <circle cx="62" cy="70" r="0.3" fill="rgba(255,255,255,0.06)" />
+        <circle cx="82" cy="76" r="0.3" fill="rgba(255,255,255,0.05)" />
+        <circle cx="35" cy="78" r="0.3" fill="rgba(255,255,255,0.05)" />
+        <circle cx="100" cy="60" r="0.3" fill="rgba(255,255,255,0.05)" />
+        <circle cx="12" cy="70" r="0.35" fill="rgba(255,255,255,0.07)" />
+      </g>
+
+      {/* === LAYER 8: Glass reflection sheen overlay === */}
+      <rect x="0" y="50" width="100" height="45" fill="url(#sheen-diag)" opacity="0.45" />
+
+      {/* === LAYER 9: Vignette on top === */}
+      <rect x="0" y="0" width="100" height="100" fill="url(#vignette)" />
+    </svg>
   )
-}
-
-// Catmull-Rom through points (curve is an array of {x,y} points)
-// t is 0..1 along the curve
-function catmullRomPoint(curve, t) {
-  const n = curve.length
-  const idx = t * (n - 1)
-  const i = Math.floor(idx)
-  const f = idx - i
-
-  const p0 = curve[Math.max(0, i - 1)]
-  const p1 = curve[i]
-  const p2 = curve[Math.min(n - 1, i + 1)]
-  const p3 = curve[Math.min(n - 1, i + 2)]
-
-  if (!p1) return curve[0]
-  if (!p2) return curve[n - 1]
-
-  const t2 = f * f
-  const t3 = t2 * f
-
-  const x = 0.5 * (
-    (2 * p1.x) +
-    (-p0.x + p2.x) * f +
-    (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
-    (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
-  )
-  const y = 0.5 * (
-    (2 * p1.y) +
-    (-p0.y + p2.y) * f +
-    (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
-    (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
-  )
-
-  return { x, y }
 }

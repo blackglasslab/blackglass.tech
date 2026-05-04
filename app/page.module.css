@@ -9,34 +9,21 @@
   justify-content: center;
 }
 
-/* Subtle vignette */
-.vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 70% 60% at 50% 45%,
-    transparent 0%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Membrane layer */
+/* Membrane layer — full viewport, content designed to sit in lower portion */
 .membrane {
   position: absolute;
   inset: 0;
   z-index: 0;
   opacity: 0;
-  transition: opacity 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fadeInMembrane 2.8s cubic-bezier(0.16, 1, 0.3, 1) 400ms forwards;
 }
 
-.membrane.visible {
-  opacity: 1;
+@keyframes fadeInMembrane {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* Foreground content */
+/* Foreground content: centered, slightly above middle */
 .content {
   position: relative;
   z-index: 2;
@@ -44,15 +31,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: -5vh;
+  /* Slightly above true center — wordmark feels more premium */
+  margin-top: -6vh;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 1.8s ease, transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(8px);
+  animation: fadeInContent 1.2s cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
 }
 
-.content.visible {
-  opacity: 1;
-  transform: translateY(0);
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .wordmark {
@@ -64,6 +58,13 @@
   margin: 0;
   user-select: none;
   text-transform: lowercase;
+  animation: fadeInWordmark 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInWordmark {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .subtitle {
@@ -74,4 +75,11 @@
   color: #a6a6a6;
   margin: 1.2rem 0 0;
   user-select: none;
+  animation: fadeInSubtitle 1s cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInSubtitle {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
