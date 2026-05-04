@@ -4,22 +4,22 @@ import styles from './page.module.css'
 export default function Home() {
   return (
     <main className={styles.main}>
-      {/* Black background fill */}
-      <div className={styles.bg} />
+      {/* Brand */}
+      <div className={styles.brand}>
+        <h1 className={styles.wordmark}>blackglass</h1>
+        <div className={styles.subtitle}>agentic systems for scientific work</div>
+      </div>
 
       {/* Glass membrane network */}
       <div className={styles.membrane}>
         <GlassMembrane />
       </div>
 
-      {/* Foreground content */}
-      <div className={styles.content}>
-        <h1 className={styles.wordmark}>blackglass</h1>
-        <p className={styles.subtitle}>agentic systems for scientific work</p>
-        <nav className={styles.nav}>
-          <a href="/tools" className={styles.navLink}>tools</a>
-        </nav>
-      </div>
+      {/* Glass reflection overlay */}
+      <div className={styles.reflection} />
+
+      {/* Vignette */}
+      <div className={styles.vignette} />
     </main>
   )
 }

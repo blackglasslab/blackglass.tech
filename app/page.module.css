@@ -1,107 +1,112 @@
 .main {
   position: relative;
-  width: 100%;
-  height: 100vh;
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
   background: #000;
+  isolation: isolate;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Membrane layer — full viewport, content designed to sit in lower portion */
+/* Vignette — layered radial gradients */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,0.045), transparent 26%),
+    radial-gradient(circle at 50% 105%, rgba(255,255,255,0.06), transparent 34%),
+    radial-gradient(circle at center, transparent 42%, rgba(0,0,0,0.92) 100%);
+}
+
+/* Diagonal glass reflection */
+.reflection {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.22;
+  background: linear-gradient(112deg,
+    transparent 0%,
+    transparent 47%,
+    rgba(255,255,255,0.055) 50%,
+    rgba(255,255,255,0.018) 54%,
+    transparent 60%,
+    transparent 100%);
+  mix-blend-mode: screen;
+}
+
+/* Membrane — fills screen, SVG content sits in lower third */
 .membrane {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   opacity: 0;
-  animation: fadeInMembrane 2.8s cubic-bezier(0.16, 1, 0.3, 1) 400ms forwards;
+  animation: membraneIn 1500ms 350ms ease-out forwards;
+  pointer-events: none;
 }
 
-@keyframes fadeInMembrane {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@keyframes membraneIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Foreground content: centered, slightly above middle */
-.content {
+/* Brand — centered, slightly above middle */
+.brand {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* Slightly above true center — wordmark feels more premium */
-  margin-top: -6vh;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeInContent 1.2s cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+  transform: translateY(-10vh);
+  animation: brandIn 950ms ease-out both;
 }
 
-@keyframes fadeInContent {
+@keyframes brandIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(-8vh) scale(0.985);
+    filter: blur(7px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-10vh) scale(1);
+    filter: blur(0);
   }
 }
 
 .wordmark {
+  margin: 0;
   font-family: Geist, Inter, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 200;
-  font-size: clamp(2.4rem, 6vw, 5rem);
-  letter-spacing: 0.3em;
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
+  letter-spacing: 0.32em;
+  line-height: 1;
   color: #f2f2f2;
-  margin: 0;
+  text-shadow: 0 0 26px rgba(255,255,255,0.10);
   user-select: none;
   text-transform: lowercase;
-  animation: fadeInWordmark 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0ms forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInWordmark {
-  from { opacity: 0; }
-  to   { opacity: 1; }
 }
 
 .subtitle {
+  margin-top: 1.35rem;
   font-family: Geist, Inter, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 300;
-  font-size: clamp(0.8rem, 1.3vw, 1.05rem);
-  letter-spacing: 0.04em;
-  color: #a6a6a6;
-  margin: 1.2rem 0 0;
+  font-size: clamp(0.82rem, 1.15vw, 1.02rem);
+  letter-spacing: 0.045em;
+  color: rgba(255,255,255,0.62);
   user-select: none;
-  animation: fadeInSubtitle 1s cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
-  opacity: 0;
+  animation: subtitleIn 1200ms 160ms ease-out both;
 }
 
-@keyframes fadeInSubtitle {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@keyframes subtitleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.nav {
-  margin-top: 2.5rem;
-  display: flex;
-  gap: 1.5rem;
-  opacity: 0;
-  animation: fadeInSubtitle 1s cubic-bezier(0.16, 1, 0.3, 1) 500ms forwards;
-}
-
-.navLink {
-  font-family: Geist, Inter, 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 300;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  color: #666;
-  text-transform: lowercase;
-  transition: color 0.2s;
-}
-
-.navLink:hover {
-  color: #c0c0c0;
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .brand { animation: none; opacity: 1; filter: none; }
+  .subtitle { animation: none; opacity: 1; }
+  .membrane { animation: none; opacity: 1; }
 }
