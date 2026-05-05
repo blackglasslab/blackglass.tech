@@ -1,6 +1,12 @@
 {
   "episodes": [
     {
+      "title": "The Adolescence of Technology",
+      "date": "2026-05-05",
+      "description": "Deep dive into Dario Amodei's 2026 essay confronting AI's coming-of-age crisis. A two-host conversation covering the country of geniuses, autonomy risks, bioweapon misuse, dictatorship risk, economic disruption, and Amodei's surgical regulation philosophy \u2014 with the Carl Sagan Contact lens throughout.",
+      "filename": "darkmatter_adolescence_of_technology.mp3"
+    },
+    {
       "title": "AI & ML Foundations",
       "date": "2026-05-04",
       "description": "Ground-up AI and machine learning literacy. From what AI actually is, through how neural networks train, the Transformer breakthrough, language models, agents, AI in biology, and key safety concepts. No jargon, just the mental models you need.",
@@ -9,7 +15,7 @@
     {
       "title": "Startup & Business Foundations",
       "date": "2026-05-04",
-      "description": "Startup fundamentals from the ground up: what defines a startup, the lifecycle, essential vocabulary like runway, burn, ARR, product-market fit, fundraising stages, equity basics, AI startup specifics, what investors look for, and how to evaluate startup roles — all connected to a scientist's transition into the startup world.",
+      "description": "Startup fundamentals from the ground up: what defines a startup, the lifecycle, essential vocabulary like runway, burn, ARR, product-market fit, fundraising stages, equity basics, AI startup specifics, what investors look for, and how to evaluate startup roles \u2014 all connected to a scientist's transition into the startup world.",
       "filename": "darkmatter_startup_foundations.mp3"
     }
   ]
